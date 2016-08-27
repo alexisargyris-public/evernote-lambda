@@ -14,11 +14,8 @@ function tagsNotebook(notebookguid) {
   // get tags of notebook
   return new Promise((resolve, reject) => {
     noteStore.listTagsByNotebook(notebookguid, function (err, res) {
-      if (err) {
-        reject(new Error(err));
-      } else {
-        resolve(res);
-      }
+      if (err) { reject(new Error(err)); } 
+      else { resolve(res); }
     })
   })
 }
@@ -26,24 +23,17 @@ function count() {
   // get count of notes of notebook
   return new Promise((resolve, reject) => {
     noteStore.findNoteCounts(noteFilter, false, function (err, res) {
-      if (err) {
-        reject(new Error(err));
-      } else {
-        resolve(res);
-      }
+      if (err) { reject(new Error(err)); } 
+      else { resolve(res); }
     })
   })
 }
 function listNote(offset, count) {
-  // get some guids
-  // promisified nodeback function (see http://stackoverflow.com/questions/22519784/how-do-i-convert-an-existing-callback-api-to-promises)
+  // get the guids of notes
   return new Promise((resolve, reject) => {
     noteStore.findNotesMetadata(noteFilter, offset, count, notesMetadataResultSpec, function (err, res) {
-      if (err) {
-        return reject(err); // WTF is the return doing there?
-      } else {
-        resolve(res);
-      }
+      if (err) { reject(new Error(err)); } 
+      else { resolve(res); }
     })
   })
 }
@@ -88,16 +78,13 @@ function tagsNote(noteguid) {
   // get tags of note
   return new Promise((resolve, reject) => {
     noteStore.getNoteTagNames(noteguid, function (err, res) {
-      if (err) {
-        reject(new Error(err));
-      } else {
-        resolve(res);
-      }
+      if (err) { reject(new Error(err)); } 
+      else { resolve(res); }
     })
   })
 }
 function selectpic(res) {
-  // select a usable pic resource or, implicitly, null
+  // select a usable pic resource
   var 
     lsindex = 0,
     lsvalue = 0;
@@ -108,16 +95,20 @@ function selectpic(res) {
     for(var i = 0; i < res.resources.length; i++) {
       if (res.resources[i].attributes.sourceURL) usableResources.push(res.resources[i]);
     }
-    // evernote's 'largest-smallest' algorithm
-    for(var i = 0; i < usableResources.length; i++) {
-      var temp = Math.min(usableResources[i].width, usableResources[i].height);
-      if (temp === 0) { continue; }
-      if (temp > lsvalue) {
-        lsindex = i;
-        lsvalue = temp;
+    if (usableResources.length > 0) {
+      // select a resource using evernote's 'largest-smallest' algorithm
+      for(var i = 0; i < usableResources.length; i++) {
+        var temp = Math.min(usableResources[i].width, usableResources[i].height);
+        if (temp === 0) { continue; }
+        if (temp > lsvalue) {
+          lsindex = i;
+          lsvalue = temp;
+        }
       }
+      return usableResources[lsindex].attributes.sourceURL;
+    } else {
+      return '';
     }
-    return usableResources[lsindex].attributes.sourceURL;
   }
 }
 function notecontent(noteguid) {
@@ -129,16 +120,15 @@ function notecontent(noteguid) {
     var withResourcesAlternateData = false;
 
     noteStore.getNote(noteguid, withContent, withResourcesData, withResourcesRecognition, withResourcesAlternateData, function (err, res) {
-      if (err) {
-        reject(new Error(err));
-      } else {
+      if (err) { reject(new Error(err)); } 
+      else {
         resolve({
           "guid": res.guid,
           "title": res.title,
           "created": res.created,
           "updated": res.updated,
           "size": res.contentLength,
-          "picUrl": selectpic(res) || '',
+          "picUrl": selectpic(res),
           "sourceUrl": res.attributes.sourceURL || ''
         });
       }
