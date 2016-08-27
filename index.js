@@ -164,7 +164,7 @@ exports.handler = (event, context, callback) => {
     noteStore = client.getNoteStore();
     switch (event.cmd) {
     case 'getNotebooks':
-      // get notebooks of authenticated user
+      // get all notebooks of the authenticated user
       noteStore.listNotebooks(authToken, (error, response) => {
         context.callbackWaitsForEmptyEventLoop = false;
         if (error) { callback(error) } 

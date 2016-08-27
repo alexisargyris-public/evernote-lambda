@@ -1,7 +1,7 @@
 {
   "author": "Alexis Argyris <alexis.argyris@gmail.com>)",
   "name": "evernote-lambda",
-  "description": "a wrapper of some evernote api functions  for aws lambda",
+  "description": "a wrapper of some evernote api functions for aws lambda",
   "version": "1.0.0",
   "repository": {
     "type": "git",
