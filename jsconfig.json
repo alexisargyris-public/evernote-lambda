@@ -1,0 +1,11 @@
+{
+	// see https://github.com/aurelia/skeleton-navigation/blob/master/skeleton-esnext/jsconfig.json
+	"compilerOptions": {
+		"target": "es6",
+		"module": "system",
+		"experimentalDecorators": true
+	},
+	"exclude": [
+		"node_modules"
+	]
+}
