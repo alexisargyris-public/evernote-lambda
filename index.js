@@ -7,7 +7,7 @@ var noteStore;
 var notebookguid;
 var noteFilter;
 var notesMetadataResultSpec;
-var noteResults = [];
+var noteResults;
 var noteguid;
 
 function tagsNotebook(notebookguid) {
@@ -61,6 +61,7 @@ function notes(notebookguid) {
     count()
       .then(response => {
         var count = response.notebookCounts[notebookguid];
+        noteResults = [];
         listMoreNotes(0, count, resolve);
       })
       .catch(reason => reject(reason))
@@ -194,3 +195,8 @@ exports.handler = (event, context, callback) => {
     }
   }
 }
+
+// exports.handler({
+//   "cmd": "getNotebook",
+//   "notebookguid": "bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76"
+// }, null, function(err, res) { console.log(res['notes'].length); });
