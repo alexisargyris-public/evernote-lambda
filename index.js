@@ -37,7 +37,7 @@ function listNote(offset, count) {
     })
   })
 }
-function listMoreNotes(offset, count, callback) {
+function listMoreNotes(offset, count, resolve) {
   // get as many guids of notes as evernote will return and continue until the end
   listNote(offset, count)
     .then(response => {
@@ -45,12 +45,12 @@ function listMoreNotes(offset, count, callback) {
       for (var index = 0; index < response.notes.length; index++) {
         noteResults.push(response.notes[index]);
       }
+      offset += response.notes.length;
       if (offset < count) {
         // there are still more notes, continue
-        offset += response.notes.length;
-        listMoreNotes(offset, count, callback);
+        listMoreNotes(offset, count, resolve);
       } else {
-        callback(noteResults);
+        resolve(noteResults);
       }
     })
     .catch(reason => { throw new Error(reason); });
