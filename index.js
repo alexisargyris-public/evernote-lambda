@@ -7,10 +7,6 @@ evernote.Client = require('./client.js').Client;
 let authToken;
 let client;
 let noteStore;
-// let notebookguid;
-// let noteFilter;
-// let notesMetadataResultSpec;
-// let noteguid;
 
 function tagsNotebook(notebookguid) {
   // get tags of notebook
@@ -58,11 +54,7 @@ function notes(notebookguid) {
 }
 function notebook(notebookguid) {
   // get tags and note guids of notebook
-  return Promise.all([
-    // errors will be managed by caller
-    tagsNotebook(notebookguid),
-    notes(notebookguid)
-  ])
+  return Promise.all([tagsNotebook(notebookguid), notes(notebookguid)])
 }
 function tagsNote(noteguid) {
   // get tags of note
@@ -119,11 +111,7 @@ function notecontent(noteguid) {
 }
 function note(noteguid) {
   // get tags and content of note of notebook
-  return Promise.all([
-    // errors will be managed by caller
-    tagsNote(noteguid),
-    notecontent(noteguid)
-  ])
+  return Promise.all([tagsNote(noteguid), notecontent(noteguid)])
 }
 
 exports.handler = (event, context, callback) => {
@@ -153,12 +141,6 @@ exports.handler = (event, context, callback) => {
       if (event.notebookguid === undefined) {
         callback(new Error('Missing notebook guid parameter'))
       } else {
-        // notebookguid = event.notebookguid;
-        // notesMetadataResultSpec = new evernote.NotesMetadataResultSpec;
-        // noteFilter = new evernote.NoteFilter;
-        // noteFilter.notebookGuid = notebookguid;
-        // noteFilter.ascending = false;
-        // noteFilter.order = 1;
         notebook(event.notebookguid)
           .then(response => callback(null, {tags: response[0], notes: response[1]})) 
           .catch(error => callback(error));
@@ -172,8 +154,8 @@ exports.handler = (event, context, callback) => {
       } else {
         // noteguid = event.noteguid;
         note(event.noteguid)
-          .then(response => {debugger; callback(null, {tags: response[0], note: response[1]})}) 
-          .catch(error => {debugger; callback(error)});
+          .then(response => callback(null, {tags: response[0], note: response[1]})) 
+          .catch(error => callback(error));
       }
       break;
     default:
@@ -181,9 +163,7 @@ exports.handler = (event, context, callback) => {
   }
 }
 
-exports.handler({
-  'cmd': 'getNote',
-  'noteguid': '9166ce04-72a8-4321-b0d1-e8c83f84d223'
-});
-
-// some comment
+// exports.handler({
+//   'cmd': 'getNote',
+//   'noteguid': '9166ce04-72a8-4321-b0d1-e8c83f84d223'
+// });
