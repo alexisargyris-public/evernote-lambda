@@ -43,6 +43,11 @@ function listMoreNotes(offset, count, noteFilter, notesMetadataResultSpec, noteR
 function notes(notebookguid) {
   // get note guids of notebook
   let notesMetadataResultSpec = new evernote.NotesMetadataResultSpec;
+  notesMetadataResultSpec.includeTitle = true;
+  notesMetadataResultSpec.includeContentLength = true;
+  notesMetadataResultSpec.includeCreated = true;
+  notesMetadataResultSpec.includeUpdated = true;
+  notesMetadataResultSpec.includeTagGuids = true;
   let noteFilter = new evernote.NoteFilter;
   noteFilter.notebookGuid = notebookguid;
   noteFilter.ascending = false;
@@ -165,5 +170,6 @@ exports.handler = (event, context, callback) => {
 
 // exports.handler({
 //   'cmd': 'getNote',
-//   'noteguid': '9166ce04-72a8-4321-b0d1-e8c83f84d223'
+//   // 'notebookguid': 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76'
+//   'noteguid': '6b415a9c-2666-4cd8-8be1-0a3d615aca65'
 // });
