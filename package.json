@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "^3.4.5",
+    "enml-js": "^0.1.3",
     "oauth": "^0.9.14"
   },
   "devDependencies": {}

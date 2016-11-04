@@ -4,6 +4,7 @@ let creds = require('./creds.js').creds;
 let Promise = require('bluebird');
 let evernote = require('./base.js').Evernote;
 evernote.Client = require('./client.js').Client;
+let enml = require('enml-js');
 let authToken;
 let client;
 let noteStore;
@@ -95,24 +96,14 @@ function selectpic(res) {
 }
 function notecontent(noteguid) {
   // get content of note
-  let withContent = false;
-  let withResourcesData = true;
-  let withResourcesRecognition = false;
-  let withResourcesAlternateData = false;
-  let prms = Promise.promisify(noteStore.getNote);
-  return prms(noteguid, withContent, withResourcesData, withResourcesRecognition, withResourcesAlternateData)
-    .then(response => {
-      let result = {
-        'guid': response.guid,
-        'title': response.title,
-        'created': response.created,
-        'updated': response.updated,
-        'size': response.contentLength,
-        'picUrl': selectpic(response),
-        'sourceUrl': response.attributes.sourceURL || ''
-      };
-      return result
-    });
+  // let prms = Promise.promisify(noteStore.getNoteContent); // this works
+  // return prms(noteguid); // this works
+  return new Promise((resolve, reject) => {
+    noteStore.getNote(noteguid, true, true, true, true, function(err, note) {
+      if (err) { reject(err) }
+      else { resolve(enml.HTMLOfENML(note.content, note.resources)) }
+    })
+  });
 }
 function note(noteguid) {
   // get tags and content of note of notebook
@@ -157,7 +148,6 @@ exports.handler = (event, context, callback) => {
       if (event.noteguid === undefined) {
         callback(new Error('Missing notebook guid parameter'))
       } else {
-        // noteguid = event.noteguid;
         note(event.noteguid)
           .then(response => callback(null, {tags: response[0], note: response[1]})) 
           .catch(error => callback(error));
@@ -171,5 +161,6 @@ exports.handler = (event, context, callback) => {
 // exports.handler({
 //   'cmd': 'getNote',
 //   // 'notebookguid': 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76'
-//   'noteguid': '6b415a9c-2666-4cd8-8be1-0a3d615aca65'
+//   // 'noteguid': '6b415a9c-2666-4cd8-8be1-0a3d615aca65'
+//   'noteguid': 'a969ad1e-1e1a-4ae7-8410-19069fd17c8b'
 // });
