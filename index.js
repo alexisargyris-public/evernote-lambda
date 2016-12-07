@@ -140,7 +140,7 @@ exports.handler = (event, context, callback) => {
           .catch(error => callback(error));
       }
      break;
-    case 'getNote':
+    case 'getNote': 
       // get info on a note
       // if no note guid was provided, then exit
       if (event.noteguid === undefined) {
