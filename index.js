@@ -96,8 +96,6 @@ function selectpic(res) {
 }
 function notecontent(noteguid) {
   // get content of note
-  // let prms = Promise.promisify(noteStore.getNoteContent); // this works
-  // return prms(noteguid); // this works
   return new Promise((resolve, reject) => {
     noteStore.getNote(noteguid, true, true, true, true, function(err, note) {
       if (err) { reject(err) }
