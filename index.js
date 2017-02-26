@@ -160,10 +160,10 @@ exports.handler = (event, context, callback) => {
 
 /*
   exports.handler({
-    // cmd: 'getNotebooks',
-    cmd: 'getNotebook',
+    cmd: 'getNotebooks'
+    // cmd: 'getNotebook',
     // cmd: 'getNote',
-    notebookguid: 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76'
+    // notebookguid: 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76'
     // noteguid: '6b415a9c-2666-4cd8-8be1-0a3d615aca65'
     // noteguid: 'a969ad1e-1e1a-4ae7-8410-19069fd17c8b'
   });
