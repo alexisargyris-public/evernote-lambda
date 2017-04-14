@@ -125,13 +125,13 @@ exports.handler = (event, context, callback) => {
     noteStore = client.getNoteStore();
     // main switch
     switch (event.cmd) {
-    case 'getNotebooks':
+    case 'list':
       // get all notebooks of the authenticated user
       noteStore.listNotebooks()
         .then(response => callback(null, response))
         .catch(error => callback(error));
       break;
-    case 'getNotebook':
+    case 'single':
       // get info on a notebook
       // if no notebook guid was provided, then exit
       if (event.notebookguid === undefined) {
@@ -142,7 +142,7 @@ exports.handler = (event, context, callback) => {
           .catch(error => callback(error));
       }
      break;
-    case 'getNote': 
+    case 'details': 
       // get info on a note
       // if no note guid was provided, then exit
       if (event.noteguid === undefined) {
