@@ -195,7 +195,10 @@ exports.handler = (event, context, callback) => {
       noteStore.listNotebooks()
         .then(response => {
           let result = [];
-          response.forEach(element => { result.push({name: element.name}) });
+          response.forEach(element => { result.push({
+            name: element.name,
+            guid: element.guid
+          }) });
           callback(null, result);
         })
         .catch(error => callback(error));
