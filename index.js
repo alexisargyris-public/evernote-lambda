@@ -12,7 +12,6 @@ exports.handler = (event, context, callback) => {
    * @param {*} notebookguid 
    */
   function tagsNotebook(notebookguid) {
-    // get tags of notebook
     return noteStore.listTagsByNotebook(notebookguid);
   }
 
@@ -21,7 +20,6 @@ exports.handler = (event, context, callback) => {
    * @param {*} noteFilter 
    */
   function count(noteFilter) {
-    // get count of notes of notebook
     return noteStore.findNoteCounts(noteFilter, false);
   }
 
@@ -33,7 +31,6 @@ exports.handler = (event, context, callback) => {
    * @param {*} notesMetadataResultSpec 
    */
   function listNote(offset, count, noteFilter, notesMetadataResultSpec) {
-    // get the guids of notes
     return noteStore.findNotesMetadata(noteFilter, offset, count, notesMetadataResultSpec);
   }
 
@@ -46,12 +43,19 @@ exports.handler = (event, context, callback) => {
    * @param {*} noteResults 
    */
   function listMoreNotes(offset, count, noteFilter, notesMetadataResultSpec, noteResults) {
-    // get as many guids of notes as evernote will return and continue until the end
     return listNote(offset, count, noteFilter, notesMetadataResultSpec)
       .then(response => {
         // add new results to result set
         for (let index = 0; index < response.notes.length; index++) {
-          noteResults.push(response.notes[index]);
+          noteResults.push({
+            title: response.notes[index].title,
+            message: '',
+            guid: response.notes[index].guid,
+            created: response.notes[index].created,
+            updated: response.notes[index].updated,
+            doc: '',
+            visible: false // initiallization
+          });
         }
         if (offset < count) {
           // there are still more notes, continue
@@ -68,7 +72,6 @@ exports.handler = (event, context, callback) => {
    * @param {*} notebookguid 
    */
   function notes(notebookguid) {
-    // get note guids of notebook
     let notesMetadataResultSpec = {
       includeTitle: true,
       includeContentLength: true,
@@ -92,7 +95,6 @@ exports.handler = (event, context, callback) => {
    * @param {*} notebookguid 
    */
   function notebook(notebookguid) {
-    // get tags and note guids of notebook
     return Promise.all([tagsNotebook(notebookguid), notes(notebookguid)])
   }
 
@@ -101,7 +103,6 @@ exports.handler = (event, context, callback) => {
    * @param {*} noteguid 
    */
   function tagsNote(noteguid) {
-    // get tags of note
     return noteStore.getNoteTagNames(noteguid);
   }
 
@@ -110,7 +111,6 @@ exports.handler = (event, context, callback) => {
    * @param {*} resources 
    */
   function selectPic(resources) {
-    // choose a usable pic resource
     let lsindex = 0;
     let lsvalue = 0;
     let usableResources = [];
@@ -142,7 +142,6 @@ exports.handler = (event, context, callback) => {
    * @param {*} noteguid 
    */
   function noteContent(noteguid) {
-    // get content of note (html, text and pic)
     let resHtml;
     return noteStore.getNoteWithResultSpec(noteguid, {'includeContent': true, 'includeResourcesData' : true})
       .then(response => {
@@ -163,7 +162,6 @@ exports.handler = (event, context, callback) => {
    * @param {*} noteguid 
    */
   function note(noteguid) {
-    // get tags, content (raw and sanitized) and pic of note of notebook
     return Promise.all([tagsNote(noteguid), noteContent(noteguid)]);
   }
 
@@ -174,6 +172,7 @@ exports.handler = (event, context, callback) => {
   let enml = require('enml-js');
   let client;
   let noteStore;
+  let errorMissingParams = 'Required parameter is missing';
 
   // If no command was provided, then exit immediately.
   if ((event === undefined) || (event.cmd === undefined) || (event.cmd === '')) {
@@ -194,7 +193,11 @@ exports.handler = (event, context, callback) => {
        * Get sources (notebooks) of authenticated user.
        */
       noteStore.listNotebooks()
-        .then(response => callback(null, response))
+        .then(response => {
+          let result = [];
+          response.forEach(element => { result.push({name: element.name}) });
+          callback(null, result);
+        })
         .catch(error => callback(error));
       break;
     /**
@@ -203,9 +206,8 @@ exports.handler = (event, context, callback) => {
      */
     case 'list':
       // if required params are missing, then exit immediately.
-      if (event.notebookguid === undefined) {
-        callback(new Error('Missing notebook guid parameter'))
-      } else {
+      if (event.notebookguid === undefined) { callback(new Error(errorMissingParams)); } 
+      else {
         notebook(event.notebookguid)
           .then(response => callback(null, {tags: response[0], notes: response[1]})) 
           .catch(error => callback(error));
