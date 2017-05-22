@@ -19,3 +19,4 @@ The following commands are supported:
 * `sources()`: get all user notebooks.
 * `list(notebookguid)`: get all notes of selected notebook.
 * `single(noteguid)`: get content (noteHtml, noteText, notePic) of selected note.
+ 
