@@ -1,7 +1,7 @@
 [![Build Status](https://semaphoreci.com/api/v1/alexisargyris/evernote-lambda/branches/master/shields_badge.svg)](https://semaphoreci.com/alexisargyris/evernote-lambda)
 
 # evernote-lambda
-a simple wrapper of selected [evernote api](https://dev.evernote.com/doc/reference) functions for aws lambda
+a simple, promise-based, wrapper of selected [evernote api](https://dev.evernote.com/doc/reference) functions for aws lambda.
 
 ## authentication
 
@@ -14,8 +14,8 @@ A file named 'creds.js' is required with the following content:
 
 ## evernote api
 
-The following functions are supported:
+The following commands are supported:
 
-* `getNotebooks()`: get all user notebooks
-* `getNotebook()`: get info (tags and note guids) on a notebook
-* `getNote()`: get tags, content (html and text) and major pic of note
+* `sources()`: get all user notebooks.
+* `list(notebookguid)`: get all notes of selected notebook.
+* `single(noteguid)`: get content (noteHtml, noteText, notePic) of selected note.
