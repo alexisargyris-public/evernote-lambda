@@ -188,60 +188,63 @@ exports.handler = (event, context, callback) => {
     noteStore = client.getNoteStore();
     // Main switch.
     switch (event.cmd) {
-    case 'sources':
       /**
        * Get sources (notebooks) of authenticated user.
        */
-      noteStore.listNotebooks()
-        .then(response => {
-          let result = [];
-          response.forEach(element => { result.push({
-            name: element.name,
-            guid: element.guid
-          }) });
-          callback(null, result);
-        })
-        .catch(error => callback(error));
-      break;
-    /**
-     * Get cards (notes) of source (notebook).
-     * @param {String} notebookguid - the notebook's guid
-     */
-    case 'list':
-      // if required params are missing, then exit immediately.
-      if (event.notebookguid === undefined) { callback(new Error(errorMissingParams)); } 
-      else {
-        notebook(event.notebookguid)
-          .then(response => callback(null, {tags: response[0], notes: response[1]})) 
+      case 'sources':
+        noteStore.listNotebooks()
+          .then(response => {
+            let result = [];
+            response.forEach(element => { result.push({
+              name: element.name,
+              guid: element.guid
+            }) });
+            callback(null, result);
+          })
           .catch(error => callback(error));
-      }
-     break;
-    /**
-     * Get content of card (note).
-     * @param {String} noteguid - the note's guid
-     */
-    case 'single': 
-      // if required params are missing, then exit immediately.
-      if (event.noteguid === undefined) {
-        callback(new Error('Missing notebook guid parameter'))
-      } else {
-        note(event.noteguid)
-          .then(response => callback(null, {noteTags: response[0], noteHtml: response[1].html, noteText: response[1].text, notePic: response[1].pic}))
-          .catch(error => callback(error));
-      }
-      break;
-    default:
+        break;
+
+      /**
+       * Get cards (notes) of source (notebook).
+       * @param {String} notebookguid - the notebook's guid
+       */
+      case 'list':
+        // if required params are missing, then exit immediately.
+        if (event.notebookguid === undefined) { callback(new Error(errorMissingParams)); } 
+        else {
+          notebook(event.notebookguid)
+            .then(response => callback(null, {tags: response[0], notes: response[1]})) 
+            .catch(error => callback(error));
+        }
+        break;
+
+      /**
+       * Get contents of card (note).
+       * @param {String} noteguid - the note's guid
+       */
+      case 'single': 
+        // if required params are missing, then exit immediately.
+        if (event.noteguid === undefined) {
+          callback(new Error('Missing notebook guid parameter'))
+        } else {
+          note(event.noteguid)
+            .then(response => callback(null, {noteTags: response[0], noteHtml: response[1].html, noteText: response[1].text, notePic: response[1].pic}))
+            .catch(error => callback(error));
+        }
+        break;
+      default:
     }
   }
 }
 
 /*
   exports.handler({
-    cmd: 'getNotebooks'
-    // cmd: 'getNotebook',
-    // cmd: 'getNote',
-    // notebookguid: 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76'
-    // noteguid: '6b415a9c-2666-4cd8-8be1-0a3d615aca65'
-    // noteguid: 'a969ad1e-1e1a-4ae7-8410-19069fd17c8b'
+    // 'cmd': 'sources'
+
+    // 'cmd': 'list',
+    // 'notebookguid': 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76'
+
+    // 'cmd': 'single',
+    // 'noteguid': '6b415a9c-2666-4cd8-8be1-0a3d615aca65'
   });
-*/
+ */
