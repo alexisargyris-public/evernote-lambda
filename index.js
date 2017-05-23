@@ -113,26 +113,19 @@ exports.handler = (event, context, callback) => {
   function selectPic(resources) {
     let lsindex = 0;
     let lsvalue = 0;
-    let usableResources = [];
     let result = '';
 
     if (resources) {
-      // find out which resources have a non-empty sourceUrl
+      // select a resource using evernote's 'largest-smallest' algorithm
       for (let i = 0; i < resources.length; i++) {
-        if (resources[i].attributes.sourceURL) usableResources.push(resources[i]);
-      }
-      if (usableResources.length > 0) {
-        // select a resource using evernote's 'largest-smallest' algorithm
-        for (let i = 0; i < usableResources.length; i++) {
-          let temp = Math.min(usableResources[i].width, usableResources[i].height);
-          if (temp === 0) { continue; }
-          if (temp > lsvalue) {
-            lsindex = i;
-            lsvalue = temp;
-          }
+        let temp = Math.min(resources[i].width, resources[i].height);
+        if (temp === 0) { continue; }
+        if (temp > lsvalue) {
+          lsindex = i;
+          lsvalue = temp;
         }
-        result = usableResources[lsindex].attributes.sourceURL;
       }
+      result = webApiUrlPrefix + 'res/' + resources[lsindex].guid;
     }
     return result;
   }
@@ -172,6 +165,7 @@ exports.handler = (event, context, callback) => {
   let enml = require('enml-js');
   let client;
   let noteStore;
+  let webApiUrlPrefix;
   let errorMissingParams = 'Required parameter is missing';
 
   // If no command was provided, then exit immediately.
@@ -185,6 +179,10 @@ exports.handler = (event, context, callback) => {
       token: creds.token,
       sandbox: false
     });
+    client.getUserStore().getPublicUserInfo(creds.userName)
+      .then(response => {
+        webApiUrlPrefix = response.webApiUrlPrefix
+      })
     noteStore = client.getNoteStore();
     // Main switch.
     switch (event.cmd) {
@@ -247,4 +245,4 @@ exports.handler = (event, context, callback) => {
     // 'cmd': 'single',
     // 'noteguid': '6b415a9c-2666-4cd8-8be1-0a3d615aca65'
   });
- */
+*/
