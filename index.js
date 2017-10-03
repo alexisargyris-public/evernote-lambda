@@ -166,7 +166,6 @@ exports.handler = (event, context, callback) => {
   let client;
   let noteStore;
   let webApiUrlPrefix;
-  let errorMissingParams = 'Required parameter is missing';
 
   // If no command was provided, then exit immediately.
   if ((event === undefined) || (event.cmd === undefined) || (event.cmd === '')) {
@@ -208,7 +207,7 @@ exports.handler = (event, context, callback) => {
        */
       case 'list':
         // if required params are missing, then exit immediately.
-        if (event.notebookguid === undefined) { callback(new Error(errorMissingParams)); } 
+        if (event.notebookguid === undefined) { callback(new Error('Missing notebook guid parameter')); } 
         else {
           notebook(event.notebookguid)
             .then(response => callback(null, {tags: response[0], notes: response[1]})) 
@@ -223,7 +222,7 @@ exports.handler = (event, context, callback) => {
       case 'single': 
         // if required params are missing, then exit immediately.
         if (event.noteguid === undefined) {
-          callback(new Error('Missing notebook guid parameter'))
+          callback(new Error('Missing note guid parameter'))
         } else {
           note(event.noteguid)
             .then(response => callback(null, {noteTags: response[0], noteHtml: response[1].html, noteText: response[1].text, notePic: response[1].pic}))
