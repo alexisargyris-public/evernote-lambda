@@ -245,7 +245,11 @@ exports.handler = (event, context, callback) => {
             })
             callback(null, result)
           })
-          .catch(error => callback(error))
+          .catch(error =>
+            callback(
+              new Error('error: ' + error.errorCode + ' ' + error.parameter)
+            )
+          )
         break
 
       /**
@@ -287,7 +291,11 @@ exports.handler = (event, context, callback) => {
                 notePic: response[1].pic
               })
             )
-            .catch(error => callback(error))
+            .catch(error =>
+              callback(
+                new Error('error: ' + error.errorCode + ' ' + error.parameter)
+              )
+            )
         }
         break
       default:
