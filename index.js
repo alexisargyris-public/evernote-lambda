@@ -204,6 +204,7 @@ exports.handler = (event, context, callback) => {
   let client
   let noteStore
   let webApiUrlPrefix
+  let result
 
   // If no command was provided, then exit immediately.
   if (event === undefined || event.cmd === undefined || event.cmd === '') {
@@ -236,7 +237,7 @@ exports.handler = (event, context, callback) => {
         noteStore
           .listNotebooks()
           .then(response => {
-            let result = []
+            result = []
             response.forEach(element => {
               result.push({
                 name: element.name,
@@ -262,9 +263,12 @@ exports.handler = (event, context, callback) => {
           callback(new Error('Missing notebook guid parameter'))
         } else {
           notebook(event.notebookguid)
-            .then(response =>
-              callback(null, { tags: response[0], notes: response[1] })
-            )
+            .then(response => {
+              result = {}
+              result.tags = response[0]
+              result.notes = response[1]
+              callback(null, result)
+            })
             .catch(error => {
               callback(
                 new Error('error: ' + error.errorCode + ' ' + error.parameter)
@@ -283,19 +287,19 @@ exports.handler = (event, context, callback) => {
           callback(new Error('Missing note guid parameter'))
         } else {
           note(event.noteguid)
-            .then(response =>
-              callback(null, {
-                noteTags: response[0],
-                noteHtml: response[1].html,
-                noteText: response[1].text,
-                notePic: response[1].pic
-              })
-            )
-            .catch(error =>
+            .then(response => {
+              result = {}
+              result.noteTags = response[0]
+              result.noteHtml = response[1].html
+              result.noteText = response[1].text
+              result.notePic = response[1].pic
+              callback(null, result)
+            })
+            .catch(error => {
               callback(
                 new Error('error: ' + error.errorCode + ' ' + error.parameter)
               )
-            )
+            })
         }
         break
       default:
@@ -311,6 +315,6 @@ exports.handler({
   // notebookguid: 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76'
 
   // cmd: 'single',
-  // noteguid: '6b415a9c-2666-4cd8-8be1-0a3d615aca65'
+  // noteguid: '2e8a4246-4098-48bc-82d2-836aa6013e42'
 })
 */
