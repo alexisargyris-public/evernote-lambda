@@ -155,9 +155,18 @@ exports.handler = (event, context, callback) => {
           lsvalue = temp
         }
       }
-      result = resources[lsindex].attributes.sourceURL
+      // attempt to find something usable in the list of resources
+      do {
+        if (
+          resources[lsindex].attributes.sourceURL &&
+          resources[lsindex].attributes.sourceURL != ''
+        ) {
+          result = resources[lsindex].attributes.sourceURL
+          break
+        } else lsindex--
+      } while (lsindex >= 0)
+      return result
     }
-    return result
   }
 
   /**
@@ -302,14 +311,12 @@ exports.handler = (event, context, callback) => {
   }
 }
 
-/*
 exports.handler({
   // cmd: 'sources'
 
   // cmd: 'list',
   // notebookguid: 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76'
 
-  // cmd: 'single',
-  // noteguid: '2e8a4246-4098-48bc-82d2-836aa6013e42'
+  cmd: 'single',
+  noteguid: 'b5bc0eca-8f33-4b1d-8691-30a53540c057'
 })
-*/
