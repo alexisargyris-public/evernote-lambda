@@ -166,7 +166,7 @@ exports.handler = (event, context, callback) => {
         } else lsindex--
       } while (lsindex >= 0)
       return result
-    }
+    } else return result
   }
 
   /**
@@ -311,12 +311,14 @@ exports.handler = (event, context, callback) => {
   }
 }
 
+/*
 exports.handler({
   // cmd: 'sources'
 
   // cmd: 'list',
   // notebookguid: 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76'
 
-  cmd: 'single',
-  noteguid: 'b5bc0eca-8f33-4b1d-8691-30a53540c057'
+  // cmd: 'single',
+  // noteguid: '93e73d2a-3e09-4d86-ba1e-5c3d57242b51'
 })
+*/
