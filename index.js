@@ -203,7 +203,7 @@ exports.handler = (event, context, callback) => {
   let enml = require('enml-js')
   let client
   let noteStore
-  let webApiUrlPrefix
+  let webApiUrlPrefix = 'https://www.evernote.com/shard/s2/' // init in case the response in the running environment is empty
   let result
 
   // If no command was provided, then exit immediately.
@@ -225,7 +225,8 @@ exports.handler = (event, context, callback) => {
       .getUserStore()
       .getPublicUserInfo(creds.userName)
       .then(response => {
-        webApiUrlPrefix = response.webApiUrlPrefix
+        // assign a value, if there is one
+        if (response.webApiUrlPrefix) webApiUrlPrefix = response.webApiUrlPrefix
       })
     noteStore = client.getNoteStore()
     // Main switch.
@@ -293,8 +294,6 @@ exports.handler = (event, context, callback) => {
               result.noteHtml = response[1].html
               result.noteText = response[1].text
               result.notePic = response[1].pic
-              console.log(response[1].pic)
-              console.log(result.notePic)
               callback(null, result)
             })
             .catch(error => {
