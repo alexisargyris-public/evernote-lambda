@@ -293,6 +293,7 @@ exports.handler = (event, context, callback) => {
               result.noteHtml = response[1].html
               result.noteText = response[1].text
               result.notePic = response[1].pic
+              console.log(response[1].pic)
               console.log(result.notePic)
               callback(null, result)
             })
