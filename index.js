@@ -68,8 +68,7 @@ exports.handler = (event, context, callback) => {
           guid: response.notes[index].guid,
           created: response.notes[index].created,
           updated: response.notes[index].updated,
-          doc: '',
-          visible: false // initiallization
+          doc: ''
         })
       }
       if (offset < count) {
