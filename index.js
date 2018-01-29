@@ -9,7 +9,7 @@
 exports.handler = (event, context, callback) => {
   /**
    * Get tags of notebook
-   * @param {*} notebookguid 
+   * @param {*} notebookguid
    */
   function tagsNotebook(notebookguid) {
     return noteStore.listTagsByNotebook(notebookguid)
@@ -17,7 +17,7 @@ exports.handler = (event, context, callback) => {
 
   /**
    * Get count of notes of notebook
-   * @param {*} noteFilter 
+   * @param {*} noteFilter
    */
   function count(noteFilter) {
     return noteStore.findNoteCounts(noteFilter, false)
@@ -25,10 +25,10 @@ exports.handler = (event, context, callback) => {
 
   /**
    * Get the guids of notes
-   * @param {*} offset 
-   * @param {*} count 
-   * @param {*} noteFilter 
-   * @param {*} notesMetadataResultSpec 
+   * @param {*} offset
+   * @param {*} count
+   * @param {*} noteFilter
+   * @param {*} notesMetadataResultSpec
    */
   function listNote(offset, count, noteFilter, notesMetadataResultSpec) {
     return noteStore.findNotesMetadata(
@@ -41,11 +41,11 @@ exports.handler = (event, context, callback) => {
 
   /**
    * Get as many guids of notes as evernote will return and continue until the end
-   * @param {*} offset 
-   * @param {*} count 
-   * @param {*} noteFilter 
-   * @param {*} notesMetadataResultSpec 
-   * @param {*} noteResults 
+   * @param {*} offset
+   * @param {*} count
+   * @param {*} noteFilter
+   * @param {*} notesMetadataResultSpec
+   * @param {*} noteResults
    */
   function listMoreNotes(
     offset,
@@ -54,42 +54,39 @@ exports.handler = (event, context, callback) => {
     notesMetadataResultSpec,
     noteResults
   ) {
-    return listNote(
-      offset,
-      count,
-      noteFilter,
-      notesMetadataResultSpec
-    ).then(response => {
-      // add new results to result set
-      for (let index = 0; index < response.notes.length; index++) {
-        noteResults.push({
-          title: response.notes[index].title,
-          message: '',
-          guid: response.notes[index].guid,
-          created: response.notes[index].created,
-          updated: response.notes[index].updated,
-          doc: ''
-        })
+    return listNote(offset, count, noteFilter, notesMetadataResultSpec).then(
+      response => {
+        // add new results to result set
+        for (let index = 0; index < response.notes.length; index++) {
+          noteResults.push({
+            title: response.notes[index].title,
+            message: '',
+            guid: response.notes[index].guid,
+            created: response.notes[index].created,
+            updated: response.notes[index].updated,
+            doc: ''
+          })
+        }
+        if (offset < count) {
+          // there are still more notes, continue
+          offset += response.notes.length
+          return listMoreNotes(
+            offset,
+            count,
+            noteFilter,
+            notesMetadataResultSpec,
+            noteResults
+          )
+        } else {
+          return noteResults
+        }
       }
-      if (offset < count) {
-        // there are still more notes, continue
-        offset += response.notes.length
-        return listMoreNotes(
-          offset,
-          count,
-          noteFilter,
-          notesMetadataResultSpec,
-          noteResults
-        )
-      } else {
-        return noteResults
-      }
-    })
+    )
   }
 
   /**
    * Get note guids of notebook
-   * @param {*} notebookguid 
+   * @param {*} notebookguid
    */
   function notes(notebookguid) {
     let notesMetadataResultSpec = {
@@ -119,7 +116,7 @@ exports.handler = (event, context, callback) => {
 
   /**
    * Get tags and note guids of notebook
-   * @param {*} notebookguid 
+   * @param {*} notebookguid
    */
   function notebook(notebookguid) {
     return Promise.all([tagsNotebook(notebookguid), notes(notebookguid)])
@@ -127,7 +124,7 @@ exports.handler = (event, context, callback) => {
 
   /**
    * Get tags of note
-   * @param {*} noteguid 
+   * @param {*} noteguid
    */
   function tagsNote(noteguid) {
     return noteStore.getNoteTagNames(noteguid)
@@ -135,42 +132,31 @@ exports.handler = (event, context, callback) => {
 
   /**
    * Select a usable pic resource
-   * @param {*} resources 
+   * @param {*} resources
    */
   function selectPic(resources) {
-    let lsindex = 0
-    let lsvalue = 0
     let result = ''
+    let candidates = []
 
-    if (resources) {
-      // select a resource using evernote's 'largest-smallest' algorithm
-      for (let i = 0; i < resources.length; i++) {
-        let temp = Math.min(resources[i].width, resources[i].height)
-        if (temp === 0) {
-          continue
+    if (resources.length) {
+      resources.forEach(item => {
+        if (item.attributes.sourceURL) candidates.push(item)
+      })
+      if (candidates.length) {
+        if (candidates.length > 1) {
+          candidates.sort((a, b) => {
+            return b.width * b.height - a.width * a.height
+          })
         }
-        if (temp > lsvalue) {
-          lsindex = i
-          lsvalue = temp
-        }
+        result = candidates[0].attributes.sourceURL
       }
-      // attempt to find something usable in the list of resources
-      do {
-        if (
-          resources[lsindex].attributes.sourceURL &&
-          resources[lsindex].attributes.sourceURL != ''
-        ) {
-          result = resources[lsindex].attributes.sourceURL
-          break
-        } else lsindex--
-      } while (lsindex >= 0)
-      return result
-    } else return result
+    }
+    return result
   }
 
   /**
    * Get content of note (html, text and pic)
-   * @param {*} noteguid 
+   * @param {*} noteguid
    */
   function noteContent(noteguid) {
     let resHtml
@@ -190,7 +176,7 @@ exports.handler = (event, context, callback) => {
               allowedTags: [],
               allowedAttributes: []
             }),
-            pic: selectPic(response.resources) // TODO find the proper property name
+            pic: selectPic(response.resources)
           })
         }
       })
@@ -198,7 +184,7 @@ exports.handler = (event, context, callback) => {
 
   /**
    * Get tags, content (raw and sanitized) and pic of note of notebook
-   * @param {*} noteguid 
+   * @param {*} noteguid
    */
   function note(noteguid) {
     return Promise.all([tagsNote(noteguid), noteContent(noteguid)])
@@ -315,9 +301,14 @@ exports.handler({
   // cmd: 'sources'
 
   // cmd: 'list',
-  // notebookguid: 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76'
+  // notebookguid: 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76',
 
   // cmd: 'single',
   // noteguid: '93e73d2a-3e09-4d86-ba1e-5c3d57242b51'
+  // noteguid: '32f1bff2-523a-428b-a555-fde73f7f1b2d',
+  // noteguid: '006b4095-40d5-4557-810e-af0ce1d20852',
+  // noteguid: 'a879c0ab-26e7-4f37-89a7-68da9db7a7b9',
+  // noteguid: '1623e69b-f462-4d55-8340-a96bd529c328',
+  // noteguid: 'b5fd05ca-089e-418d-acec-254dee2326ab',
 })
 */
