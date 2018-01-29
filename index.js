@@ -290,7 +290,6 @@ exports.handler = (event, context, callback) => {
               )
             })
         }
-        break
       default:
     }
   }
