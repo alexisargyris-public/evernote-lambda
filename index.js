@@ -138,7 +138,7 @@ exports.handler = (event, context, callback) => {
     let result = ''
     let candidates = []
 
-    if (resources.length) {
+    if (resources && resources.length) {
       resources.forEach(item => {
         if (item.attributes.sourceURL) candidates.push(item)
       })
@@ -303,7 +303,7 @@ exports.handler({
   // notebookguid: 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76',
 
   // cmd: 'single',
-  // noteguid: '93e73d2a-3e09-4d86-ba1e-5c3d57242b51'
+  // noteguid: '0983af99-5ea5-47ea-bd5f-b4689d989fce'
   // noteguid: '32f1bff2-523a-428b-a555-fde73f7f1b2d',
   // noteguid: '006b4095-40d5-4557-810e-af0ce1d20852',
   // noteguid: 'a879c0ab-26e7-4f37-89a7-68da9db7a7b9',
