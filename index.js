@@ -162,21 +162,21 @@ exports.handler = (event, context, callback) => {
     let resHtml
     return noteStore
       .getNoteWithResultSpec(noteguid, {
-        includeContent: true,
-        includeResourcesData: true
+        includeContent: true
+        // includeResourcesData: true
       })
       .then(response => {
         if (response.message) {
           return Promise.reject(new Error(response.message))
         } else {
-          resHtml = enml.HTMLOfENML(response.content, response.resources)
+          let temp = enml.HTMLOfENML(response.content) // enml.HTMLOfENML(response.content, response.resources)
           return Promise.resolve({
-            html: resHtml,
-            text: sanitizeHtml(resHtml, {
+            html: temp,
+            text: sanitizeHtml(temp, {
               allowedTags: [],
               allowedAttributes: []
             }),
-            pic: selectPic(response.resources)
+            pic: '' // selectPic(response.resources)
           })
         }
       })
@@ -277,10 +277,11 @@ exports.handler = (event, context, callback) => {
         } else {
           note(event.noteguid)
             .then(response => {
+              debugger
               result = {}
               result.noteTags = response[0]
               result.noteHtml = response[1].html
-              result.noteText = response[1].text
+              result.noteText = response[1].text.trim()
               result.notePic = response[1].pic
               callback(null, result)
             })
@@ -303,7 +304,7 @@ exports.handler({
   // notebookguid: 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76',
 
   // cmd: 'single',
-  // noteguid: '0983af99-5ea5-47ea-bd5f-b4689d989fce'
+  // noteguid: '006b4095-40d5-4557-810e-af0ce1d20852'
   // noteguid: '32f1bff2-523a-428b-a555-fde73f7f1b2d',
   // noteguid: '006b4095-40d5-4557-810e-af0ce1d20852',
   // noteguid: 'a879c0ab-26e7-4f37-89a7-68da9db7a7b9',
