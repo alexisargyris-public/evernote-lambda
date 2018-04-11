@@ -64,7 +64,8 @@ exports.handler = (event, context, callback) => {
             guid: response.notes[index].guid,
             created: response.notes[index].created,
             updated: response.notes[index].updated,
-            doc: ''
+            doc: '',
+            sourceUrl: response.notes[index].attributes.sourceURL
           })
         }
         if (offset < count) {
@@ -91,10 +92,10 @@ exports.handler = (event, context, callback) => {
   function notes(notebookguid) {
     let notesMetadataResultSpec = {
       includeTitle: true,
-      includeContentLength: true,
       includeCreated: true,
       includeUpdated: true,
-      includeTagGuids: true
+      includeTagGuids: true,
+      includeAttributes: true
     }
     let noteFilter = {
       notebookGuid: notebookguid,
@@ -277,7 +278,6 @@ exports.handler = (event, context, callback) => {
         } else {
           note(event.noteguid)
             .then(response => {
-              debugger
               result = {}
               result.noteTags = response[0]
               result.noteHtml = response[1].html
@@ -301,9 +301,10 @@ exports.handler({
   // cmd: 'sources'
 
   // cmd: 'list',
-  // notebookguid: 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76',
+  // notebookguid: 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76'
 
   // cmd: 'single',
+  // noteguid: 'b354b021-7d39-4757-a060-ce196aa55c13'
   // noteguid: '006b4095-40d5-4557-810e-af0ce1d20852'
   // noteguid: '32f1bff2-523a-428b-a555-fde73f7f1b2d',
   // noteguid: '006b4095-40d5-4557-810e-af0ce1d20852',
