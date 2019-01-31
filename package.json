@@ -14,9 +14,5 @@
     "evernote": "^2.0.5",
     "oauth": "^0.9.15",
     "sanitize-html": "^1.14.1"
-  },
-  "devDependencies": {
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-react": "^7.6.1"
   }
 }

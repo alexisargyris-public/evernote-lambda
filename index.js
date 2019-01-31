@@ -296,20 +296,16 @@ exports.handler = (event, context, callback) => {
   }
 }
 
-/*
-exports.handler({
-  // cmd: 'sources'
-
-  // cmd: 'list',
-  // notebookguid: 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76'
-
-  // cmd: 'single',
-  // noteguid: 'b354b021-7d39-4757-a060-ce196aa55c13'
-  // noteguid: '006b4095-40d5-4557-810e-af0ce1d20852'
-  // noteguid: '32f1bff2-523a-428b-a555-fde73f7f1b2d',
-  // noteguid: '006b4095-40d5-4557-810e-af0ce1d20852',
-  // noteguid: 'a879c0ab-26e7-4f37-89a7-68da9db7a7b9',
-  // noteguid: '1623e69b-f462-4d55-8340-a96bd529c328',
-  // noteguid: 'b5fd05ca-089e-418d-acec-254dee2326ab',
-})
-*/
+// exports.handler({
+// cmd: 'sources'
+// cmd: 'list',
+// notebookguid: 'bf0ff626-e6e1-4bcb-bdfd-07f9c318cb76'
+// cmd: 'single',
+// noteguid: 'b354b021-7d39-4757-a060-ce196aa55c13'
+// noteguid: '006b4095-40d5-4557-810e-af0ce1d20852'
+// noteguid: '32f1bff2-523a-428b-a555-fde73f7f1b2d',
+// noteguid: '006b4095-40d5-4557-810e-af0ce1d20852',
+// noteguid: 'a879c0ab-26e7-4f37-89a7-68da9db7a7b9',
+// noteguid: '1623e69b-f462-4d55-8340-a96bd529c328',
+// noteguid: 'b5fd05ca-089e-418d-acec-254dee2326ab',
+// })
